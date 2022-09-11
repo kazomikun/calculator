@@ -1,4 +1,5 @@
 const form = document.getElementById("calc_form")
+const operator_btns = document.querySelectorAll("button[data-type=operator]")
 console.log("hello");
 // console.log(form);
 form.addEventListener("submit", (e) => {
@@ -27,3 +28,43 @@ operand_btns.forEach((btn) => {
     }
   })
 });
+
+let equation = []
+
+const remove_active = () => {
+ operator_btns.forEach((btn) => {
+  btn.classList.remove("active")
+ ;});
+};
+
+operator_btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+  remove_active();
+  e.currentTarget.classList.add("active")
+
+    switch (e.target.value) {
+      case "%":
+        output.value = parseFloat(output.value) / 100
+        break
+      case "invert":
+        output.value = parseFloat(output.value) * -1
+        break
+      case "=":
+        equation.push(output.value)
+        output.value = eval(equation.join(""))
+        equation = []
+        break
+      default:
+        let last_item = equation[equation.length - 1]
+        if (["/", "*", "+", "-"].includes(last_item) && is_operator) {
+          equation.pop();
+          equation.push(e.target.value);
+        } else {
+          equation.push(output.value);
+          equation.push(e.target.value);
+        }
+        is_operator = true;
+        break;
+      }
+  })
+})
